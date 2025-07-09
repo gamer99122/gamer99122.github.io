@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行消費分帳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .member-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .member-input input {
+            flex: 1;
+        }
+
+        .member-input button {
+            width: auto;
+            padding: 12px 20px;
+            background: #e74c3c;
+        }
+
+        .member-input button:hover {
+            background: #c0392b;
+        }
+
+        .members-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .member-item button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .member-item button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .expense-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .expense-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .expense-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .expense-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .settlement-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #27ae60;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settlement-amount {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .total-expenses {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .expense-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✈️ 旅行消費分帳</h1>
+        
+        <!-- 添加成員 -->
+        <div class="section">
+            <h2>👥 成員管理</h2>
+            <div class="member-input">
+                <input type="text" id="memberName" placeholder="輸入成員名稱">
+                <button onclick="addMember()">新增成員</button>
+            </div>
+            <div class="members-list" id="membersList"></div>
+        </div>
+
+        <!-- 添加消費 -->
+        <div class="section">
+            <h2>💰 新增消費</h2>
+            <div class="form-group">
+                <label for="expenseDescription">消費項目</label>
+                <input type="text" id="expenseDescription" placeholder="例如：晚餐、交通費、住宿">
+            </div>
+            <div class="form-group">
+                <label for="expenseAmount">金額</label>
+                <input type="number" id="expenseAmount" placeholder="輸入金額" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="expenseDate">日期</label>
+                <input type="date" id="expenseDate">
+            </div>
+            <div class="form-group">
+                <label for="payer">付款人</label>
+                <select id="payer"></select>
+            </div>
+            <div class="form-group">
+                <label>分帳對象</label>
+                <div class="checkbox-group" id="participants"></div>
+            </div>
+            <button onclick="addExpense()">新增消費紀錄</button>
+        </div>
+
+        <!-- 消費紀錄 -->
+        <div class="section">
+            <h2>📊 消費紀錄</h2>
+            <div class="form-group">
+                <label for="dateFilter">篩選日期</label>
+                <select id="dateFilter" onchange="updateExpensesList()">
+                    <option value="">顯示全部</option>
+                </select>
+            </div>
+            <div class="total-expenses" id="totalExpenses">總消費：$0</div>
+            <div id="expensesList"></div>
+        </div>
+
+        <!-- 結算 -->
+        <div class="section">
+            <h2>🧮 結算明細</h2>
+            <div class="form-group">
+                <label for="settlementDateFilter">篩選日期</label>
+                <select id="settlementDateFilter" onchange="updateSettlement()">
+                    <option value="">顯示全部</option>
+                </select>
+            </div>
+            <div id="settlementList"></div>
+        </div>
+
+        <!-- 資料管理 -->
+        <div class="section">
+            <h2>💾 資料管理</h2>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="exportData()" style="flex: 1; min-width: 120px;">匯出資料</button>
+                <button onclick="clearData()" style="flex: 1; min-width: 120px; background: #e74c3c;">清空資料</button>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="importFile">匯入資料</label>
+                <input type="file" id="importFile" accept=".json" onchange="importData()" style="padding: 8px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let members = [];
+        let expenses = [];
+
+        // 初始化
+        function init() {
+            loadData();
+            setDefaultDate();
+            updateMembersList();
+            updatePayerSelect();
+            updateParticipants();
+            updateDateFilters();
+            updateExpensesList();
+            updateSettlement();
+        }
+
+        // 設定預設日期
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = today;
+        }
+
+        // 載入資料
+        function loadData() {
+            const savedData = localStorage.getItem('travelExpenseData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    members = data.members || [];
+                    expenses = data.expenses || [];
+                } catch (e) {
+                    console.error('載入資料失敗:', e);
+                }
+            }
+        }
+
+        // 儲存資料
+        function saveData() {
+            const data = {
+                members: members,
+                expenses: expenses,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('travelExpenseData', JSON.stringify(data));
+        }
+
+        // 添加成員
+        function addMember() {
+            const memberName = document.getElementById('memberName').value.trim();
+            if (memberName && !members.includes(memberName)) {
+                members.push(memberName);
+                document.getElementById('memberName').value = '';
+                saveData();
+                updateMembersList();
+                updatePayerSelect();
+                updateParticipants();
+                updateSettlement();
+            }
+        }
+
+        // 更新成員列表
+        function updateMembersList() {
+            const membersList = document.getElementById('membersList');
+            membersList.innerHTML = members.map(member => 
+                `<div class="member-item">
+                    <span>${member}</span>
+                    <button onclick="removeMember('${member}')" title="刪除成員">×</button>
+                </div>`
+            ).join('');
+        }
+
+        // 刪除成員
+        function removeMember(memberName) {
+            if (confirm(`確定要刪除成員「${memberName}」嗎？`)) {
+                // 檢查是否有相關消費記錄
+                const hasExpenses = expenses.some(expense => 
+                    expense.payer === memberName || expense.participants.includes(memberName)
+                );
+                
+                if (hasExpenses) {
+                    if (!confirm(`成員「${memberName}」有相關消費記錄，刪除後這些記錄可能受到影響。確定要繼續嗎？`)) {
+                        return;
+                    }
+                }
+                
+                members = members.filter(member => member !== memberName);
+                saveData();
+                updateMembersList();
+                updatePayerSelect();
+                updateParticipants();
+                updateSettlement();
+            }
+        }
+
+        // 更新付款人選項
+        function updatePayerSelect() {
+            const payerSelect = document.getElementById('payer');
+            payerSelect.innerHTML = '<option value="">請選擇付款人</option>' + 
+                members.map(member => `<option value="${member}">${member}</option>`).join('');
+        }
+
+        // 更新分帳對象
+        function updateParticipants() {
+            const participants = document.getElementById('participants');
+            participants.innerHTML = members.map(member => 
+                `<div class="checkbox-item">
+                    <input type="checkbox" id="participant-${member}" value="${member}" checked>
+                    <label for="participant-${member}">${member}</label>
+                </div>`
+            ).join('');
+        }
+
+        // 添加消費
+        function addExpense() {
+            const description = document.getElementById('expenseDescription').value.trim();
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const date = document.getElementById('expenseDate').value;
+            const payer = document.getElementById('payer').value;
+            const participantCheckboxes = document.querySelectorAll('#participants input[type="checkbox"]:checked');
+            const participants = Array.from(participantCheckboxes).map(cb => cb.value);
+
+            if (!description || !amount || !date || !payer || participants.length === 0) {
+                alert('請填寫完整資訊');
+                return;
+            }
+
+            // 使用當前時間
+            const now = new Date();
+            const time = now.toTimeString().slice(0, 5);
+
+            const expense = {
+                id: Date.now(),
+                description,
+                amount,
+                date,
+                time,
+                payer,
+                participants,
+                datetime: now.toISOString()
+            };
+
+            expenses.push(expense);
+            
+            // 清空表單
+            document.getElementById('expenseDescription').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('payer').value = '';
+            setDefaultDate();
+            
+            saveData();
+            updateDateFilters();
+            updateExpensesList();
+            updateSettlement();
+        }
+
+        // 更新日期篩選器
+        function updateDateFilters() {
+            const dates = [...new Set(expenses.map(expense => expense.date))].sort();
+            
+            const dateFilter = document.getElementById('dateFilter');
+            const settlementDateFilter = document.getElementById('settlementDateFilter');
+            
+            const options = '<option value="">顯示全部</option>' + 
+                dates.map(date => {
+                    const displayDate = new Date(date).toLocaleDateString('zh-TW');
+                    return `<option value="${date}">${displayDate}</option>`;
+                }).join('');
+            
+            dateFilter.innerHTML = options;
+            settlementDateFilter.innerHTML = options;
+        }
+
+        // 更新消費列表
+        function updateExpensesList() {
+            const expensesList = document.getElementById('expensesList');
+            const totalExpenses = document.getElementById('totalExpenses');
+            const selectedDate = document.getElementById('dateFilter').value;
+            
+            // 篩選消費
+            const filteredExpenses = selectedDate ? 
+                expenses.filter(expense => expense.date === selectedDate) : 
+                expenses;
+            
+            const total = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const dateText = selectedDate ? `(${new Date(selectedDate).toLocaleDateString('zh-TW')})` : '';
+            totalExpenses.textContent = `總消費${dateText}：${total.toFixed(2)}`;
+
+            if (filteredExpenses.length === 0) {
+                expensesList.innerHTML = '<div class="no-data">尚無消費紀錄</div>';
+                return;
+            }
+
+            // 按日期時間排序
+            filteredExpenses.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+
+            expensesList.innerHTML = filteredExpenses.map(expense => 
+                `<div class="expense-item">
+                    <div class="expense-header">
+                        <span>${expense.description}</span>
+                        <span class="expense-amount">${expense.amount.toFixed(2)}</span>
+                    </div>
+                    <div class="expense-details">
+                        付款人：${expense.payer} | 
+                        分帳對象：${expense.participants.join(', ')} | 
+                        時間：${new Date(expense.date).toLocaleDateString('zh-TW')} ${expense.time}
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        // 計算並更新結算
+        function updateSettlement() {
+            const settlementList = document.getElementById('settlementList');
+            const selectedDate = document.getElementById('settlementDateFilter').value;
+            
+            if (members.length === 0 || expenses.length === 0) {
+                settlementList.innerHTML = '<div class="no-data">尚無結算資料</div>';
+                return;
+            }
+
+            // 篩選消費
+            const filteredExpenses = selectedDate ? 
+                expenses.filter(expense => expense.date === selectedDate) : 
+                expenses;
+
+            if (filteredExpenses.length === 0) {
+                settlementList.innerHTML = '<div class="no-data">所選日期無消費紀錄</div>';
+                return;
+            }
+
+            // 計算每個人的支出和應付金額
+            const balances = {};
+            members.forEach(member => {
+                balances[member] = 0;
+            });
+
+            filteredExpenses.forEach(expense => {
+                const perPersonAmount = expense.amount / expense.participants.length;
+                
+                // 付款人增加支出
+                balances[expense.payer] += expense.amount;
+                
+                // 每個參與者減少應付金額
+                expense.participants.forEach(participant => {
+                    balances[participant] -= perPersonAmount;
+                });
+            });
+
+            // 生成結算明細
+            const settlements = [];
+            const debtors = [];
+            const creditors = [];
+
+            Object.entries(balances).forEach(([member, balance]) => {
+                if (balance > 0.01) {
+                    creditors.push({ member, amount: balance });
+                } else if (balance < -0.01) {
+                    debtors.push({ member, amount: -balance });
+                }
+            });
+
+            // 簡化結算（債務人向債權人還款）
+            creditors.sort((a, b) => b.amount - a.amount);
+            debtors.sort((a, b) => b.amount - a.amount);
+
+            let i = 0, j = 0;
+            while (i < creditors.length && j < debtors.length) {
+                const creditor = creditors[i];
+                const debtor = debtors[j];
+                const amount = Math.min(creditor.amount, debtor.amount);
+
+                if (amount > 0.01) {
+                    settlements.push({
+                        from: debtor.member,
+                        to: creditor.member,
+                        amount: amount
+                    });
+                }
+
+                creditor.amount -= amount;
+                debtor.amount -= amount;
+
+                if (creditor.amount <= 0.01) i++;
+                if (debtor.amount <= 0.01) j++;
+            }
+
+            const dateText = selectedDate ? `(${new Date(selectedDate).toLocaleDateString('zh-TW')})` : '';
+            if (settlements.length === 0) {
+                settlementList.innerHTML = `<div class="no-data">✅ 所有帳務已結清${dateText}</div>`;
+            } else {
+                settlementList.innerHTML = settlements.map(settlement => 
+                    `<div class="settlement-item">
+                        <span>${settlement.from} → ${settlement.to}</span>
+                        <span class="settlement-amount">${settlement.amount.toFixed(2)}</span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        // 匯出資料
+        function exportData() {
+            const data = {
+                members: members,
+                expenses: expenses,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const jsonData = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `travel_expense_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 匯入資料
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.members && data.expenses) {
+                        if (confirm('匯入資料將覆蓋現有資料，確定要繼續嗎？')) {
+                            members = data.members;
+                            expenses = data.expenses;
+                            saveData();
+                            
+                            updateMembersList();
+                            updatePayerSelect();
+                            updateParticipants();
+                            updateDateFilters();
+                            updateExpensesList();
+                            updateSettlement();
+                            
+                            alert('資料匯入成功！');
+                        }
+                    } else {
+                        alert('檔案格式不正確！');
+                    }
+                } catch (error) {
+                    alert('檔案讀取失敗！');
+                }
+            };
+            reader.readAsText(file);
+            
+            // 清空檔案輸入
+            fileInput.value = '';
+        }
+
+        // 清空資料
+        function clearData() {
+            if (confirm('確定要清空所有資料嗎？此操作無法復原！')) {
+                members = [];
+                expenses = [];
+                localStorage.removeItem('travelExpenseData');
+                
+                updateMembersList();
+                updatePayerSelect();
+                updateParticipants();
+                updateDateFilters();
+                updateExpensesList();
+                updateSettlement();
+                
+                alert('資料已清空！');
+            }
+        }
+
+        // 監聽輸入框回車事件
+        document.getElementById('memberName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addMember();
+            }
+        });
+
+        // 初始化應用
+        init();
+    </script>
+</body>
+</html>
